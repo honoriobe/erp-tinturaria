@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERP Tinturaria</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="logo">F</div>
+        <div>
+          <h1>Lavanderia Fátima</h1>
+          <p>Painel financeiro das sócias</p>
+        </div>
+      </div>
+
+      <p class="login-text">Digite a senha única, escolha o perfil e entre no painel.</p>
+
+      <label>Senha única do ERP</label>
+      <input id="loginSenha" type="password" placeholder="Digite a senha do sistema">
+
+      <label>Escolha o perfil para entrar</label>
+      <div class="profile-choice">
+        <label class="profile-option"><input type="radio" name="perfilLogin" value="Sócia 1" checked><span>Sócia 1</span></label>
+        <label class="profile-option"><input type="radio" name="perfilLogin" value="Sócia 2"><span>Sócia 2</span></label>
+        <label class="profile-option"><input type="radio" name="perfilLogin" value="Sócia 3"><span>Sócia 3</span></label>
+      </div>
+
+      <div class="info-box">Senha inicial de teste: <b>fatima2026</b></div>
+      <div id="loginErro" class="error-box hidden"></div>
+      <button id="btnLogin" class="btn btn-primary full">Entrar no painel</button>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">F</div>
+        <div>
+          <h1>Lavanderia Fátima</h1>
+          <p>ERP Financeiro</p>
+        </div>
+      </div>
+
+      <div class="user-card">
+        <small>Usuário atual</small>
+        <strong id="usuarioAtual">Sócia 1</strong>
+        <div class="user-actions">
+          <button id="btnTrocarUsuario" class="btn btn-primary small">Trocar usuário</button>
+          <button id="btnSair" class="btn btn-danger small">Sair</button>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <button class="menu-btn active" data-screen="dashboard">🏠 Dashboard</button>
+        <button class="menu-btn" data-screen="entradas">💰 Entradas</button>
+        <button class="menu-btn" data-screen="despesas">💸 Despesas</button>
+        <button class="menu-btn" data-screen="notas">🧾 Notas</button>
+        <button class="menu-btn" data-screen="contas">📅 Contas a pagar</button>
+        <button class="menu-btn" data-screen="fechamento">🔒 Fechamento</button>
+        <button class="menu-btn" data-screen="relatorios">📊 Relatórios</button>
+        <button class="menu-btn" data-screen="historico">🕵️ Histórico</button>
+        <button class="menu-btn" data-screen="backup">☁️ Backup</button>
+        <button class="menu-btn" data-screen="config">⚙️ Configurações</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h2 id="pageTitle">Dashboard</h2>
+        <p id="pageSubtitle">Visão rápida da saúde financeira da loja.</p>
+      </header>
+
+      <section id="dashboard" class="screen active">
+        <div class="quick-actions">
+          <button class="btn btn-success" data-open="entradas">+ Nova Entrada</button>
+          <button class="btn btn-danger" data-open="despesas">+ Nova Despesa</button>
+          <button class="btn btn-warning" data-open="notas">Notas Pendentes</button>
+          <button class="btn btn-primary" data-open="fechamento">Fechar Dia</button>
+          <button id="btnBackupDash" class="btn">Backup</button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><span>Faturamento Hoje</span><strong id="dashReceitaHoje" class="success-text">R$ 0,00</strong><small id="dashQtdEntradas">0 entradas</small></div>
+          <div class="card"><span>Despesas Hoje</span><strong id="dashDespesasHoje" class="danger-text">R$ 0,00</strong><small id="dashQtdDespesas">0 despesas</small></div>
+          <div class="card"><span>Lucro Hoje</span><strong id="dashLucroHoje">R$ 0,00</strong><small>Receita - despesas</small></div>
+          <div class="card"><span>Faturamento do Mês</span><strong id="dashReceitaMes" class="success-text">R$ 0,00</strong><small id="dashLucroMes">Lucro estimado: R$ 0,00</small></div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><span>PIX Hoje</span><strong id="dashPix">R$ 0,00</strong></div>
+          <div class="card"><span>Cartão Hoje</span><strong id="dashCartao">R$ 0,00</strong></div>
+          <div class="card"><span>Dinheiro Hoje</span><strong id="dashDinheiro">R$ 0,00</strong></div>
+          <div class="card"><span>Contas Vencendo</span><strong id="dashContasVencendo" class="warning-text">0</strong><small>Próximos 7 dias</small></div>
+        </div>
+
+        <div id="alertasDashboard" class="panel"></div>
+      </section>
+
+      <section id="entradas" class="screen">
+        <div class="panel">
+          <h3 id="entradaTitulo">Registrar Entrada</h3>
+          <p>Campos marcados com * são obrigatórios. Nº da nota não pode duplicar.</p>
+          <div id="entradaErro" class="error-box hidden"></div>
+
+          <div class="form-grid">
+            <div><label>Data *</label><input id="entradaData" type="date"></div>
+            <div><label>Lançado por *</label><select id="entradaUsuario"></select></div>
+            <div><label>Cliente *</label><input id="entradaCliente" placeholder="Nome do cliente"></div>
+            <div><label>CPF/CNPJ</label><input id="entradaCpf" placeholder="CPF ou CNPJ"></div>
+            <div><label>Valor *</label><input id="entradaValor" class="money" inputmode="numeric" placeholder="R$ 0,00"></div>
+            <div><label>Forma de pagamento *</label><select id="entradaPagamento"><option value="">Selecione</option><option>PIX</option><option>Cartão</option><option>Dinheiro</option><option>Transferência</option><option>Outro</option></select></div>
+            <div><label>Nota Carioca</label><select id="entradaNota"><option>Pendente</option><option>Emitida</option><option>Não precisa</option></select></div>
+            <div><label>Nº da Nota *</label><input id="entradaNumeroNota" class="input-nota" placeholder="Número da nota"></div>
+            <div class="full"><label>Descrição</label><textarea id="entradaDescricao" placeholder="Descrição manual do serviço"></textarea></div>
+            <div id="entradaMotivoBox" class="full hidden"><label>Motivo da edição *</label><textarea id="entradaMotivo" placeholder="Explique o motivo da alteração"></textarea></div>
+          </div>
+
+          <div class="actions">
+            <button id="btnSalvarEntrada" class="btn btn-success">Salvar Entrada</button>
+            <button id="btnCancelarEdicaoEntrada" class="btn hidden">Cancelar edição</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Entradas registradas</h3>
+          <div class="filters">
+            <input id="filtroEntradaBusca" placeholder="Buscar cliente, nota, pagamento...">
+            <input id="filtroEntradaMes" type="month">
+            <select id="filtroEntradaStatus"><option value="ativas">Ativas</option><option value="todas">Todas</option><option value="canceladas">Canceladas</option></select>
+          </div>
+          <div id="entradasTabela"></div>
+        </div>
+      </section>
+
+      <section id="despesas" class="screen">
+        <div class="panel">
+          <h3 id="despesaTitulo">Registrar Despesa</h3>
+          <div id="despesaErro" class="error-box hidden"></div>
+
+          <div class="form-grid">
+            <div><label>Data *</label><input id="despesaData" type="date"></div>
+            <div><label>Lançado por *</label><select id="despesaUsuario"></select></div>
+            <div><label>Categoria *</label><select id="despesaCategoria"><option value="">Selecione</option><option>Água</option><option>Luz</option><option>Aluguel</option><option>Funcionários</option><option>Produtos</option><option>Contador</option><option>Internet/Telefone</option><option>Manutenção</option><option>Impostos</option><option>Transporte/Entrega</option><option>Outros</option></select></div>
+            <div><label>Valor *</label><input id="despesaValor" class="money" inputmode="numeric" placeholder="R$ 0,00"></div>
+            <div><label>Status *</label><select id="despesaStatus"><option>Pago</option><option>Pendente</option></select></div>
+            <div><label>Vencimento</label><input id="despesaVencimento" type="date"></div>
+            <div class="full"><label>Descrição *</label><textarea id="despesaDescricao" placeholder="Descrição da despesa"></textarea></div>
+            <div id="despesaMotivoBox" class="full hidden"><label>Motivo da edição *</label><textarea id="despesaMotivo" placeholder="Explique o motivo da alteração"></textarea></div>
+          </div>
+
+          <div class="actions">
+            <button id="btnSalvarDespesa" class="btn btn-danger">Salvar Despesa</button>
+            <button id="btnCancelarEdicaoDespesa" class="btn hidden">Cancelar edição</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Despesas registradas</h3>
+          <div class="filters">
+            <input id="filtroDespesaBusca" placeholder="Buscar categoria, descrição...">
+            <input id="filtroDespesaMes" type="month">
+            <select id="filtroDespesaStatus"><option value="ativas">Ativas</option><option value="todas">Todas</option><option value="pendentes">Pendentes</option><option value="canceladas">Canceladas</option></select>
+          </div>
+          <div id="despesasTabela"></div>
+        </div>
+      </section>
+
+      <section id="notas" class="screen">
+        <div class="panel">
+          <h3>Notas Carioca</h3>
+          <p>Controle notas pendentes, emitidas e duplicadas.</p>
+          <div class="filters">
+            <input id="filtroNotasBusca" placeholder="Buscar nº da nota ou cliente">
+            <select id="filtroNotasStatus"><option value="pendentes">Pendentes</option><option value="emitidas">Emitidas</option><option value="todas">Todas</option></select>
+          </div>
+          <div id="notasTabela"></div>
+        </div>
+      </section>
+
+      <section id="contas" class="screen">
+        <div class="panel">
+          <h3>Contas a pagar</h3>
+          <div id="contaErro" class="error-box hidden"></div>
+          <div class="form-grid">
+            <div><label>Fornecedor / Conta *</label><input id="contaFornecedor" placeholder="Ex: Light, CEDAE, aluguel..."></div>
+            <div><label>Categoria *</label><select id="contaCategoria"><option value="">Selecione</option><option>Água</option><option>Luz</option><option>Aluguel</option><option>Funcionários</option><option>Produtos</option><option>Contador</option><option>Internet/Telefone</option><option>Impostos</option><option>Outros</option></select></div>
+            <div><label>Valor *</label><input id="contaValor" class="money" inputmode="numeric" placeholder="R$ 0,00"></div>
+            <div><label>Vencimento *</label><input id="contaVencimento" type="date"></div>
+            <div><label>Status</label><select id="contaStatus"><option>Pendente</option><option>Pago</option></select></div>
+            <div><label>Responsável</label><select id="contaUsuario"></select></div>
+            <div class="full"><label>Observação</label><textarea id="contaObs" placeholder="Observações da conta"></textarea></div>
+          </div>
+          <div class="actions"><button id="btnSalvarConta" class="btn btn-primary">Salvar Conta</button></div>
+        </div>
+        <div class="panel"><h3>Contas cadastradas</h3><div id="contasTabela"></div></div>
+      </section>
+
+      <section id="fechamento" class="screen">
+        <div class="panel">
+          <h3>Fechamento diário</h3>
+          <div class="form-grid">
+            <div><label>Data</label><input id="fechamentoData" type="date"></div>
+            <div><label>Responsável</label><select id="fechamentoUsuario"></select></div>
+            <div class="full"><label>Observações</label><textarea id="fechamentoObs" placeholder="Observações do fechamento"></textarea></div>
+          </div>
+          <div class="actions">
+            <button id="btnAtualizarFechamento" class="btn btn-primary">Atualizar Resumo</button>
+            <button id="btnFecharDia" class="btn btn-warning">Fechar Dia</button>
+          </div>
+          <div id="fechamentoResumo"></div>
+        </div>
+      </section>
+
+      <section id="relatorios" class="screen">
+        <div class="panel">
+          <h3>Relatórios</h3>
+          <div class="filters">
+            <input id="relInicio" type="date">
+            <input id="relFim" type="date">
+            <select id="relPagamento"><option value="">Todas as formas</option><option>PIX</option><option>Cartão</option><option>Dinheiro</option><option>Transferência</option><option>Outro</option></select>
+            <select id="relUsuario"><option value="">Todos usuários</option></select>
+          </div>
+          <div class="actions">
+            <button id="btnGerarRelatorio" class="btn btn-primary">Gerar Relatório</button>
+            <button id="btnImprimir" class="btn">PDF / Imprimir</button>
+            <button id="btnExportarEntradas" class="btn">Exportar Entradas CSV</button>
+            <button id="btnExportarDespesas" class="btn">Exportar Despesas CSV</button>
+          </div>
+          <div id="relatorioConteudo"></div>
+        </div>
+      </section>
+
+      <section id="historico" class="screen"><div class="panel"><h3>Histórico</h3><div id="historicoTabela"></div></div></section>
+
+      <section id="backup" class="screen">
+        <div class="panel">
+          <h3>Backup</h3>
+          <p>Baixe uma cópia dos dados ou importe um backup.</p>
+          <div class="actions">
+            <button id="btnBackup" class="btn btn-primary">Baixar Backup</button>
+            <label class="btn">Importar Backup<input id="inputBackup" type="file" accept="application/json" class="hidden"></label>
+            <button id="btnLimpar" class="btn btn-danger">Limpar dados de teste</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="config" class="screen">
+        <div class="panel">
+          <h3>Configurações</h3>
+          <div class="form-grid">
+            <div><label>Nome da empresa</label><input id="cfgEmpresa"></div>
+            <div><label>Telefone</label><input id="cfgTelefone"></div>
+            <div class="full"><label>Endereço</label><input id="cfgEndereco"></div>
+            <div><label>Sócia 1</label><input id="cfgSocia1"></div>
+            <div><label>Sócia 2</label><input id="cfgSocia2"></div>
+            <div><label>Sócia 3</label><input id="cfgSocia3"></div>
+            <div class="full"><label>Senha única do ERP</label><input id="cfgSenha" type="password"></div>
+          </div>
+          <div class="actions"><button id="btnSalvarConfig" class="btn btn-primary">Salvar Configurações</button></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button data-open="dashboard">🏠<span>Início</span></button>
+      <button data-open="entradas">➕<span>Entrada</span></button>
+      <button data-open="despesas">➖<span>Despesa</span></button>
+      <button data-open="relatorios">📊<span>Relatório</span></button>
+    </nav>
+  </div>
+
+  <div id="trocarUsuarioModal" class="modal hidden">
+    <div class="modal-card">
+      <h3>Trocar usuário</h3>
+      <p>Escolha a sócia e confirme com a senha.</p>
+      <div class="profile-choice">
+        <label class="profile-option"><input type="radio" name="perfilTroca" value="Sócia 1" checked><span>Sócia 1</span></label>
+        <label class="profile-option"><input type="radio" name="perfilTroca" value="Sócia 2"><span>Sócia 2</span></label>
+        <label class="profile-option"><input type="radio" name="perfilTroca" value="Sócia 3"><span>Sócia 3</span></label>
+      </div>
+      <label>Senha única</label><input id="trocarSenha" type="password" placeholder="Digite a senha">
+      <div class="actions"><button id="btnConfirmarTroca" class="btn btn-primary">Confirmar</button><button id="btnCancelarTroca" class="btn">Cancelar</button></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
