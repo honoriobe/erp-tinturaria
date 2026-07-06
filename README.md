@@ -27,3 +27,7 @@ Senha normal: fatima2026
 Senha ADM oculta: uzumaki
 
 Atenção: esta versão é estática. Para uso real com segurança, o ideal é migrar login e dados para backend/banco online.
+
+
+## v37
+Correção responsiva para abrir melhor em desktop, Android e iPhone, sem rolagem horizontal.
