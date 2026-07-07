@@ -29,5 +29,6 @@ Senha ADM oculta: uzumaki
 Atenção: esta versão é estática. Para uso real com segurança, o ideal é migrar login e dados para backend/banco online.
 
 
-## v37
-Correção responsiva para abrir melhor em desktop, Android e iPhone, sem rolagem horizontal.
+## v37 - Layout compacto
+
+Esta versão diminui a largura máxima do painel, deixa os cards menos esticados e melhora a leitura no computador.
